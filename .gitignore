@@ -1,0 +1,14 @@
+# Folders to ignore
+commands_tested/
+out/
+test_sample_dyogo/
+input_data/
+.snakemake/
+
+# Files to ignore
+input-2020-09-24.build4894
+pgap_2020-09-24.build4894.sif
+sample_sheet.yaml
+VERSION
+
+

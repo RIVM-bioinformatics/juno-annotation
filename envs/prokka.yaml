@@ -1,0 +1,7 @@
+name: prokka
+channels:
+  - bioconda
+  - defaults
+dependencies:
+  - prokka
+  - blast=2.9

@@ -1,0 +1,6 @@
+name: circlator
+channels:
+  - bioconda
+  - defaults
+dependencies:
+  - circlator

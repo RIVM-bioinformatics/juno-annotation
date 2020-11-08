@@ -1,0 +1,14 @@
+consortium: 'RIVM'
+organism:
+    genus_species: 'Not provided' 
+contact_info:
+    last_name: 'Schouls'
+    first_name: 'Leo'
+    email: 'leo.schouls@rivm.nl'
+    organization: 'RIVM'
+    department: 'BSR'
+    phone: 'NA'
+    street: 'Antonie van Leeuwenhoeklaan 9'
+    city: 'Bilthoven'
+    postal_code: '3721MA'
+    country: 'The Netherlands'  

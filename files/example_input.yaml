@@ -1,0 +1,7 @@
+fasta:
+  class: File
+  location: 22008488_Kpn_assembly.fasta
+submol:
+  class: File
+  location: 22008488_submol.yaml
+report_usage: false

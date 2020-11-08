@@ -1,0 +1,73 @@
+
+################################ PROKKA ############################
+
+## Fix tbl2asn. Needs to be run at least once every 6 months
+wget https://ftp.ncbi.nih.gov/toolbox/ncbi_tools/converters/by_program/tbl2asn/linux64.tbl2asn.gz
+gunzip linux64.tbl2asn.gz
+mv linux64.tbl2asn tbl2asn
+cp linux64.tbl2asn `which tbl2asn`
+
+###Prokka tests
+
+# Default
+# Got around half of hypothetical proteins than Dyogo 1215/5262
+prokka --outdir prokka/out_test_default test_sample_dyogo/22008488_Kpn_assembly.fasta
+
+# Using hmms from Resfams 1175/5262
+prokka --outdir prokka/out_test_resfams_hmms --hmms prokka/testing_db/resfam/Resfams-full.hmm test_sample_dyogo/22008488_Kpn_assembly.fasta
+
+# Using proteins from Resfams 1264/5291
+prokka --outdir prokka/out_test_resfams_proteins --proteins prokka/testing_db/resfam/proteins/all_resfam.fasta test_sample_dyogo/22008488_Kpn_assembly.fasta
+
+# Using proteins from ResFinder 1215/5262
+prokka --outdir prokka/out_test_resfinder --proteins /mnt/db/amr_annotation_db/db_resfinder/all_resfinder.fasta test_sample_dyogo/22008488_Kpn_assembly.fasta
+
+# Using proteins from PlasmidFinder 1215/5262
+prokka --outdir prokka/out_test_plasmidfinder --proteins /mnt/db/amr_annotation_db/plasmidfinder_db/all_plasmidfinder.fasta test_sample_dyogo/22008488_Kpn_assembly.fasta
+
+# Using genus 1215/5262
+prokka --outdir prokka/out_test_genus --genus Klebsiella --usegenus test_sample_dyogo/22008488_Kpn_assembly.fasta
+
+# Using proteins from PLSDB 1215/5262
+prokka --outdir prokka/out_test_plsdb --proteins /mnt/db/amr_annotation_db/plsdb/plsdb.fasta test_sample_dyogo/22008488_Kpn_assembly.fasta
+
+###### Translating fastas to protein first
+# Using proteins from ResFinder 1215/5262
+prokka --outdir prokka/out_test_resfinder_proteins --proteins /mnt/db/amr_annotation_db/db_resfinder/all_resfinder_proteins.fasta test_sample_dyogo/22008488_Kpn_assembly.fasta
+
+# Using proteins from PlasmidFinder 1220/5262
+prokka --outdir prokka/out_test_plasmidfinder_proteins --proteins /mnt/db/amr_annotation_db/plasmidfinder_db/all_plasmidfinder_proteins.fasta test_sample_dyogo/22008488_Kpn_assembly.fasta
+
+# Using proteins from PLSDB 402/5262
+bsub -q "bio" -n 16 -o prokka/out_plsdb_proteins.txt -e prokka/err_plsdb_proteins.txt prokka --outdir prokka/out_test_plsdb_proteins_bsub --proteins /mnt/db/amr_annotation_db/plsdb/plsdb_proteins.fasta --cpus 16 test_sample_dyogo/22008488_Kpn_assembly.fasta
+
+
+
+
+################ Other helpful things
+# Info over annotating plasmids
+https://www.biostars.org/p/405668/
+# Filter hypothetical proteins
+out_test_default]$ awk '/^>/ && toupper($0) ~ /HYPOTHETICAL/ {bool=1}; /^>/ && toupper($0) !~ /HYPOTHETICAL/ {bool=0}; {if (bool==1) print}' PROKKA_10302020.faa > PROKKA_10302020_hypothetical.faa
+# Get fasta files from a blast database
+blastdbcmd -entry all -db plsdb.fna -out plsdb.fasta
+
+
+## Convert fasta dna to fasta protein
+#Biopython
+records = SeqIO.parse("/mnt/db/amr_annotation_db/plsdb/plsdb.fasta", "fasta")
+
+with open("/mnt/db/amr_annotation_db/plsdb/plsdb_proteins.fasta", "w") as out_f:
+    for record in records:
+        record.seq = record.seq.translate(table="Bacterial")
+        SeqIO.write(record, out_f, "fasta")
+
+############################### PGAP
+##Look at https://biohpc.cornell.edu/lab/userguide.aspx?a=software&i=687
+##conda activate singularity_ahs
+#./pgap.py -D singularity --update
+./pgap.py -D /usr/bin/singularity -r -o mg37_results test_genomes/MG37/input.yaml
+
+
+# Real example
+./pgap.py -D /usr/bin/singularity -o /mnt/scratch_dir/hernanda/annotation_pipeline/pgap/out_test1 /mnt/scratch_dir/hernanda/annotation_pipeline/test_sample_dyogo/22008488_input.yaml

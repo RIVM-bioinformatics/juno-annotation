@@ -1,0 +1,12 @@
+name: amr_master
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - snakemake==5.4.3
+  - drmaa==0.7.9
+  - xlrd==1.2.0
+  - pandas==1.1.0
+  - pip
+    - yaml
