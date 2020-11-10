@@ -6,6 +6,8 @@ input_data/
 .snakemake/
 
 # Files to ignore
+config/variables.yaml
+.Rhistory
 input-2020-09-24.build4894
 pgap_2020-09-24.build4894.sif
 sample_sheet.yaml

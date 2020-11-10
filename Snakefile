@@ -107,11 +107,13 @@ onstart:
             echo -e "\n\n" >> '{OUT}/results/log_config.txt'
         done
         echo -e "\n==> Contents of sample sheet: <==" >> '{OUT}/results/log_config.txt'
-            {SAMPLES} >> '{OUT}/results/log_config.txt'
+            cat sample_sheet.yaml >> '{OUT}/results/log_config.txt'
             echo -e "\n\n" >> '{OUT}/results/log_config.txt'
         echo -e "\n==> Extra parameters given while calling the pipeline (they overwrite any defaults): \n   \
             Output directory: {OUT} \n   \
-            Protein database: {PROTEIN_DB}" >> '{OUT}/results/log_config.txt'
+            Genus used as default (if not provided in metadata): {GENUS_ALL} \n   \
+            Species used as default (if not provided in metadata): {SPECIES_ALL} \n   \
+            Protein database: {PROTEIN_DB}\n\n" >> '{OUT}/results/log_config.txt'
     """)
 
 #@################################################################################
@@ -127,7 +129,6 @@ onsuccess:
     shell("""
         echo -e "Removing temporary files..."
         find {OUT} -type d -empty -delete
-        rm -r test_genomes*
         echo -e "\tGenerating HTML index of log files..."
         echo -e "\tGenerating Snakemake report..."
         snakemake --config out="{OUT}" genus="{GENUS_ALL}" species={SPECIES_ALL} --unlock
