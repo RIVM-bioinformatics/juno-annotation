@@ -8,4 +8,3 @@ latency-wait: 60
 use-conda: true
 jobname: Juno_{name}.jobid{jobid}
 keep-going: true
-

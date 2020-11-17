@@ -9,6 +9,7 @@ rule annotation_prokka:
     output:
         OUT + "/prokka/{sample}/{sample}.gbk"
     threads: config["threads"]["prokka"]
+    resources: mem_mb=config["mem_mb"]["prokka"]
     conda:
         "../../envs/prokka.yaml"
     params:

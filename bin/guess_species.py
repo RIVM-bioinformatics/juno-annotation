@@ -1,0 +1,32 @@
+import argparse
+import yaml
+import os
+import pandas as pd
+
+# Load dictionary with translation table (abbreviations versus genus and species)
+translation_tbl = {}
+with open("files/dictionary_samples.yaml") as translation_yaml:
+    translation_tbl = yaml.safe_load(translation_yaml)
+
+def find_abbreviation(file_name, abbreviation):
+    if file_name.__contains__(abbreviation):
+        return translation_tbl[abbreviation]
+
+def main(args):
+    # Get file names 
+    file_species = pd.DataFrame(os.listdir(args.dir), columns=["File_name"])
+    file_species["Genus"] = ""
+    file_species["Species"] = ""
+    # File names to genus/species
+    for file, abbr in [(file, abbr) for file in file_species["File_name"].tolist() for abbr in list(translation_tbl.keys())]:
+        if find_abbreviation(file, abbr) is not None:
+            dict_sample = find_abbreviation(file, abbr)
+            file_species.loc[file_species["File_name"] == file, "Genus"] = dict_sample["Genus"]
+            file_species.loc[file_species["File_name"] == file, "Species"] = dict_sample["Species"]
+    file_species.to_csv("metadata.csv", index = False)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("dir", type=str, 
+                       help="Path to input directory with fastq files")
+    main(parser.parse_args())

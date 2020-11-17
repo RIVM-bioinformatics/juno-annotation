@@ -14,6 +14,7 @@ rule annotation_pgap:
         sqn_output = OUT + "/pgap/{sample}/{sample}.sqn",
         gff_output = OUT + "/pgap/{sample}/{sample}.gff"
     threads: config["threads"]["pgap"]
+    resources: mem_mb=config["mem_mb"]["pgap"]
     params:
         genus = lambda wildcards: SAMPLES[wildcards.sample]["Genus"],
         species = lambda wildcards: SAMPLES[wildcards.sample]["Species"],

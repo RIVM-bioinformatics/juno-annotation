@@ -1,0 +1,21 @@
+Kpn:
+  Genus: Klebsiella
+  Species: pneumoniae
+Eco:
+  Genus: Escherichia
+  Species: coli
+Ecl:
+  Genus: Enterobacter
+  Species: cloacae
+Cfr:
+  Genus: Citrobacter
+  Species: freundii
+Pae:
+  Genus: Pseudomonas
+  Species: aeruginosa
+Sau:
+  Genus: Staphylococcus
+  Species: aureus
+Sar:
+  Genus: Staphylococcus
+  Species: aureus

@@ -16,6 +16,7 @@ rule fixstart_circlator:
     conda:
         "../../envs/circlator.yaml"
     threads: config["threads"]["circlator"]
+    resources: mem_mb=config["mem_mb"]["circlator"]
     params:
         OUT + "/circlator/{sample}/{sample}"
     log:

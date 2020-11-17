@@ -21,7 +21,8 @@
 set -o allexport
 source bin/include/functions.sh
 eval "$(parse_yaml config/config.yaml "configuration_")"
-set +o allexport
+set +o allexport]
+#set -x # Debug mode if necessary
 
 UNIQUE_ID=$(bin/include/generate_id.sh)
 SET_HOSTNAME=$(bin/include/gethostname.sh)
@@ -35,6 +36,7 @@ INPUT_DIR="raw_data/"
 OUTPUT_DIR="out/"
 GENUS="NotProvided"
 SPECIES="NotProvided"
+MAKE_METADATA="FALSE"
 METADATA_FILE="X"
 PROTEIN_DB="/mnt/db/amr_annotation_db/refseq_plasmids/all_plasmid.nonredundant_proteins.fasta"
 SNAKEMAKE_UNLOCK="FALSE"
@@ -71,6 +73,10 @@ do
         --metadata)
         METADATA_FILE="$2"
         shift
+        shift
+        ;;
+        --make-metadata)
+        MAKE_METADATA="TRUE"
         shift
         ;;
         -h|--help)
@@ -125,7 +131,14 @@ Input:
   --metadata [.csv]                 CSV file with at least 3 columns: "File_name", "Genus" and "Species". Where the "File_name" should 
                                     coincide EXACTLY (case sensitive) with the name of the fasta file of the sample. The genus and the
                                     species they should both be terms accepted in the TaxID system and one single word each. For example:
-                                    mysample.fasta, Escherichia, coli.
+                                    mysample.fasta, Escherichia, coli. Note that if you use the option --make-metadata, any other metadata
+                                    file provided will be ignored.
+
+  --make-metadata                   If this option is chosen, the metadata will be gotten from the file name. Basically, the abbreviation
+                                    of some common species are looked for in the file name and they are used to determine the genus and 
+                                    species. The accepted abbreviations are: Kpn = Klebsiella pneumoniae, Eco = Escherichia coli, 
+                                    Ecl = Enterobacter cloacae, Cfr = Citrobacter freundii, Pae = Pseudomonas aeruginosa,
+                                    Sau or Sar = Staphylococcus aureus
 
   --proteins                        Path to protein database (fasta file with PROTEIN sequences) to be used for annotation with prokka. 
                                     Default is: /mnt/db/amr_annotation_db/plsdb/plsdb_proteins.fasta and contains the PLSDB database
@@ -245,9 +258,19 @@ if [ ! -d "${INPUT_DIR}" ]; then
     exit 1
 fi
 
+# Make metadata if available
+if [ $MAKE_METADATA == "TRUE" ]; then
+    echo -e "\n\nMaking metadata..."
+    python bin/guess_species.py $INPUT_DIR
+    METADATA_FILE="./metadata.csv"
+    echo -e "\n\nSuccessfully created metadata.csv file"
+fi
+
 if [ $METADATA_FILE != "X" ]; then
     if [ ! -f $METADATA_FILE ]; then
         echo -e "The provided species file ${METADATA_FILE} does not exist. Please provide an existing file"
+        echo -e "If you used the option --make-metadata, please check that all the fasta files contain the .fasta
+        extension and that the file names have the right abbreviations for genus/species"
         exit 1
     fi
 fi
