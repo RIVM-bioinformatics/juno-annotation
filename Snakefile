@@ -67,7 +67,6 @@ include: "bin/rules/circlator.smk"
     #############################################################################
 include: "bin/rules/update_tbl2asn.smk"
 include: "bin/rules/prokka.smk"
-include: "bin/rules/pgap.smk"
 
     #############################################################################
     #####           Fix GenBank file and fine-tune results                  #####
@@ -94,9 +93,9 @@ onstart:
         mkdir -p {OUT}/results
         echo -e "\nLogging pipeline settings..."
         echo -e "\tGenerating methodological hash (fingerprint)..."
-        #echo -e "This is the link to the code used for this analysis:\thttps://github.com/AleSR13/AMR_annotation/tree/$(git log -n 1 --pretty=format:"%H")" > '{OUT}/results/log_git.txt'
-        #echo -e "This code with unique fingerprint $(git log -n1 --pretty=format:"%H") was committed by $(git log -n1 --pretty=format:"%an <%ae>") at $(git log -n1 --pretty=format:"%ad")" >> '{OUT}/results/log_git.txt'
-        #echo -e "\tGenerating full software list of current Conda environment (\"juno_master\")..."
+        echo -e "This is the link to the code used for this analysis:\thttps://github.com/AleSR13/AMR_annotation/tree/$(git log -n 1 --pretty=format:"%H")" > '{OUT}/results/log_git.txt'
+        echo -e "This code with unique fingerprint $(git log -n1 --pretty=format:"%H") was committed by $(git log -n1 --pretty=format:"%an <%ae>") at $(git log -n1 --pretty=format:"%ad")" >> '{OUT}/results/log_git.txt'
+        echo -e "\tGenerating full software list of current Conda environment (\"juno_mmaster\")..."
         conda list > '{OUT}/results/log_conda.txt'
         echo -e "\tGenerating config file log..."
         rm -f '{OUT}/results/log_config.txt'
@@ -131,8 +130,8 @@ onsuccess:
         find {OUT} -type d -empty -delete
         echo -e "\tGenerating HTML index of log files..."
         echo -e "\tGenerating Snakemake report..."
-        snakemake --config out="{OUT}" genus="{GENUS_ALL}" species={SPECIES_ALL} --unlock
-        snakemake --config out="{OUT}" genus="{GENUS_ALL}" species={SPECIES_ALL} --report '{OUT}/results/snakemake_report.html'
+        snakemake --profile config --config out="{OUT}" genus="{GENUS_ALL}" species={SPECIES_ALL} --unlock
+        snakemake --profile config --config out="{OUT}" genus="{GENUS_ALL}" species={SPECIES_ALL} --report '{OUT}/results/snakemake_report.html'
         echo -e "Finished"
     """)
 
@@ -150,6 +149,4 @@ localrules:
 rule all:
     input:
         expand(OUT + "/circlator/{sample}/{sample}.fasta", sample = SAMPLES),
-        expand(OUT + "/circlator/{sample}/{sample}_input.yaml", sample = SAMPLES),
-        expand(OUT + "/pgap/{sample}/{sample}.gbk", sample = SAMPLES),
         expand(OUT + "/prokka/{sample}/{sample}.gbk", sample = SAMPLES)

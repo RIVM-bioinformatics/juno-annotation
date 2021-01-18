@@ -21,7 +21,7 @@
 set -o allexport
 source bin/include/functions.sh
 eval "$(parse_yaml config/config.yaml "configuration_")"
-set +o allexport]
+set +o allexport
 #set -x # Debug mode if necessary
 
 UNIQUE_ID=$(bin/include/generate_id.sh)
@@ -192,16 +192,19 @@ if [ ! -e "${PATH_MASTER_YAML}" ]; then # If this yaml file does not exist, give
     exit 1
 fi
 
+## Activate mamba
+conda env update -f envs/mamba.yaml
+conda activate mamba
+
 if [[ $PATH != *${MASTER_NAME}* ]]; then # If the master environment is not in your path (i.e. it is not currently active), do...
     line
     spacer
     set +ue # Turn bash strict mode off because that breaks conda
     conda activate "${MASTER_NAME}" # Try to activate this env
     if [ ! $? -eq 0 ]; then # If exit statement is not 0, i.e. master conda env hasn't been installed yet, do...
-        installer_intro
         if [ "${SKIP_CONFIRMATION}" = "TRUE" ]; then
             echo -e "\tInstalling master environment..." 
-            conda env create -f ${PATH_MASTER_YAML} 
+            mamba env update -f ${PATH_MASTER_YAML} 
             conda activate "${MASTER_NAME}"
             echo -e "DONE"
         else
@@ -210,7 +213,7 @@ if [[ $PATH != *${MASTER_NAME}* ]]; then # If the master environment is not in y
                 envanswer=${envanswer,,}
                 if [[ "${envanswer}" =~ ^(yes|y)$ ]]; then
                     echo -e "\tInstalling master environment..." 
-                    conda env create -f ${PATH_MASTER_YAML}
+                    mamba env update -f ${PATH_MASTER_YAML}
                     conda activate "${MASTER_NAME}"
                     echo -e "DONE"
                     break
