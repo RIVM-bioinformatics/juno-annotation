@@ -95,7 +95,7 @@ onstart:
         echo -e "\tGenerating methodological hash (fingerprint)..."
         echo -e "This is the link to the code used for this analysis:\thttps://github.com/AleSR13/AMR_annotation/tree/$(git log -n 1 --pretty=format:"%H")" > '{OUT}/results/log_git.txt'
         echo -e "This code with unique fingerprint $(git log -n1 --pretty=format:"%H") was committed by $(git log -n1 --pretty=format:"%an <%ae>") at $(git log -n1 --pretty=format:"%ad")" >> '{OUT}/results/log_git.txt'
-        echo -e "\tGenerating full software list of current Conda environment (\"juno_mmaster\")..."
+        echo -e "\tGenerating full software list of current Conda environment (\"amr_master\")..."
         conda list > '{OUT}/results/log_conda.txt'
         echo -e "\tGenerating config file log..."
         rm -f '{OUT}/results/log_config.txt'

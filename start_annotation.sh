@@ -194,18 +194,18 @@ fi
 
 ## Activate mamba
 conda env update -f envs/mamba.yaml
-conda activate mamba
+source activate mamba
 
 if [[ $PATH != *${MASTER_NAME}* ]]; then # If the master environment is not in your path (i.e. it is not currently active), do...
     line
     spacer
     set +ue # Turn bash strict mode off because that breaks conda
-    conda activate "${MASTER_NAME}" # Try to activate this env
+    source activate "${MASTER_NAME}" # Try to activate this env
     if [ ! $? -eq 0 ]; then # If exit statement is not 0, i.e. master conda env hasn't been installed yet, do...
         if [ "${SKIP_CONFIRMATION}" = "TRUE" ]; then
             echo -e "\tInstalling master environment..." 
             mamba env update -f ${PATH_MASTER_YAML} 
-            conda activate "${MASTER_NAME}"
+            source activate "${MASTER_NAME}"
             echo -e "DONE"
         else
             while read -r -p "The master environment hasn't been installed yet, do you want to install this environment now? [y/n] " envanswer
@@ -214,7 +214,7 @@ if [[ $PATH != *${MASTER_NAME}* ]]; then # If the master environment is not in y
                 if [[ "${envanswer}" =~ ^(yes|y)$ ]]; then
                     echo -e "\tInstalling master environment..." 
                     mamba env update -f ${PATH_MASTER_YAML}
-                    conda activate "${MASTER_NAME}"
+                    source activate "${MASTER_NAME}"
                     echo -e "DONE"
                     break
                 elif [[ "${envanswer}" =~ ^(no|n)$ ]]; then
