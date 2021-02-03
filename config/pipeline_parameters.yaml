@@ -1,5 +1,4 @@
 sample_sheet: sample_sheet.yaml
-protein_db: /mnt/db/amr_annotation_db/refseq_plasmids/all_plasmid.nonredundant_proteins.fasta
 
 # Number of threads
 threads:

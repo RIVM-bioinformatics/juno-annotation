@@ -75,6 +75,11 @@ do
         shift
         shift
         ;;
+        --proteins)
+        PROTEIN_DB="$2"
+        shift
+        shift
+        ;;
         --make-metadata)
         MAKE_METADATA="TRUE"
         shift
@@ -141,7 +146,8 @@ Input:
                                     Sau or Sar = Staphylococcus aureus
 
   --proteins                        Path to protein database (fasta file with PROTEIN sequences) to be used for annotation with prokka. 
-                                    Default is: /mnt/db/amr_annotation_db/plsdb/plsdb_proteins.fasta and contains the PLSDB database
+                                    Default is the non-redundant plasmid proteins of the refseq database stored at the RIVM (you only have
+                                    access if you are at the RIVM).
 
 Output (automatically generated):
   <output_dir>/                     Contains dir contains the results of every step of the pipeline.
@@ -271,11 +277,27 @@ fi
 
 if [ $METADATA_FILE != "X" ]; then
     if [ ! -f $METADATA_FILE ]; then
+        minispacer
         echo -e "The provided species file ${METADATA_FILE} does not exist. Please provide an existing file"
         echo -e "If you used the option --make-metadata, please check that all the fasta files contain the .fasta
         extension and that the file names have the right abbreviations for genus/species"
+        minispacer
         exit 1
     fi
+fi
+
+if [ -f ${PROTEIN_DB} ]; then
+    if [[ ! "${PROTEIN_DB}" =~ "fasta"$ ]] && [[ ! "${PROTEIN_DB}" =~ "gbk"$ ]]; then
+        minispacer
+        echo -e "${PROTEIN_DB} file not accepted. Only .fasta or .gbk files are accepted in --proteins. Please provide a file with a supported format."
+        minispacer
+        exit 1
+    fi
+else
+    minispacer
+    echo -e "The provided database file ${PROTEIN_DB} does not exist. Please provide an existing file"
+    minispacer
+    exit 1
 fi
 
 
@@ -298,7 +320,8 @@ if [  `find $INPUT_DIR -type f -name *.fasta | wc -l` -gt 0 ]; then
 else
     minispacer
     echo -e "The input directory you specified (${INPUT_DIR}) exists but is empty or does not contain the expected input files...\nPlease specify a directory with input-data."
-    exit 0
+    minispacer
+    exit 1
 fi
 
 ### Checker for succesfull creation of sample_sheet

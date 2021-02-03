@@ -130,11 +130,10 @@ onsuccess:
         find {OUT} -type d -empty -delete
         echo -e "\tGenerating HTML index of log files..."
         echo -e "\tGenerating Snakemake report..."
-        snakemake --profile config --config out="{OUT}" genus="{GENUS_ALL}" species={SPECIES_ALL} --unlock
-        snakemake --profile config --config out="{OUT}" genus="{GENUS_ALL}" species={SPECIES_ALL} --report '{OUT}/results/snakemake_report.html'
+        snakemake --profile config --config out="{OUT}" genus="{GENUS_ALL}" species={SPECIES_ALL} protein_db={PROTEIN_DB} --unlock
+        snakemake --profile config --config out="{OUT}" genus="{GENUS_ALL}" species={SPECIES_ALL} protein_db={PROTEIN_DB} --report '{OUT}/results/snakemake_report.html'
         echo -e "Finished"
     """)
-
 
 #################################################################################
 ##### Specify final output:                                                 #####

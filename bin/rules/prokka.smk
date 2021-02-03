@@ -5,7 +5,8 @@
 rule annotation_prokka:
     input:
         fasta = OUT + "/circlator/{sample}/{sample}.fasta",
-        tbl2asn = "tbl2asn"
+        tbl2asn = "tbl2asn",
+        protein_db = PROTEIN_DB
     output:
         OUT + "/prokka/{sample}/{sample}.gbk"
     threads: config["threads"]["prokka"]
@@ -14,8 +15,7 @@ rule annotation_prokka:
         "../../envs/prokka.yaml"
     params:
         genus = lambda wildcards: SAMPLES[wildcards.sample]["Genus"],
-        species = lambda wildcards: SAMPLES[wildcards.sample]["Species"],
-        protein_db = config["protein_db"]
+        species = lambda wildcards: SAMPLES[wildcards.sample]["Species"]
     log:
         OUT + "/log/prokka/{sample}.log"
     benchmark:
@@ -31,13 +31,15 @@ if [ {params.species} != "nan" ]; then
     --genus {params.genus} \
     --species {params.species} \
     --prefix ${{sample_name%.gbk}} \
-    --proteins {params.protein_db} \
+    --proteins {input.protein_db} \
+    --addgenes \
     --cpus {threads} {input.fasta} &>> {log}
 else
     prokka --outdir ${{output_dir}} --force \
     --genus {params.genus} \
     --prefix ${{sample_name%.gbk}} \
-    --proteins {params.protein_db} \
+    --proteins {input.protein_db} \
+    --addgenes \
     --cpus {threads} {input.fasta} &>> {log}
 fi
         """
