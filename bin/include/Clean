@@ -41,7 +41,8 @@ if [ "${should_i_clean}" == "yes" ]; then
     a=(
     "${OUTPUT_DIR}"
     "sample_sheet.yaml"
-    "profile/variables.yaml"
+    "config/variables.yaml"
+    "config/amr_annotation_call.txt"
     )
 
     for i in "${a[@]}"; do

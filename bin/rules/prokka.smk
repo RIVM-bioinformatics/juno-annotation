@@ -14,8 +14,8 @@ rule annotation_prokka:
     conda:
         "../../envs/prokka.yaml"
     params:
-        genus = lambda wildcards: SAMPLES[wildcards.sample]["Genus"],
-        species = lambda wildcards: SAMPLES[wildcards.sample]["Species"]
+        genus = lambda wildcards: SAMPLES[wildcards.sample]["genus"],
+        species = lambda wildcards: SAMPLES[wildcards.sample]["species"]
     log:
         OUT + "/log/prokka/{sample}.log"
     benchmark:
@@ -26,7 +26,7 @@ output_dir={output}
 sample_name=`basename ${{output_dir}}`
 output_dir=`dirname ${{output_dir}}`
 
-if [ {params.species} != "nan" ]; then
+if [ {params.species} != "NotProvided" ]; then
     prokka --outdir ${{output_dir}} --force \
     --genus {params.genus} \
     --species {params.species} \

@@ -1,7 +1,8 @@
 import argparse
 import yaml
-import os
+import glob
 import pandas as pd
+import os
 
 # Load dictionary with translation table (abbreviations versus genus and species)
 translation_tbl = {}
@@ -14,16 +15,18 @@ def find_abbreviation(file_name, abbreviation):
 
 def main(args):
     # Get file names 
-    file_species = pd.DataFrame(os.listdir(args.dir), columns=["File_name"])
+    file_species = pd.DataFrame(glob.glob(args.dir+"/*.fasta"), columns=["File_name"])
     file_species["Genus"] = ""
     file_species["Species"] = ""
+    file_species["File_name"] = file_species["File_name"].apply(os.path.basename)
     # File names to genus/species
     for file, abbr in [(file, abbr) for file in file_species["File_name"].tolist() for abbr in list(translation_tbl.keys())]:
-        if find_abbreviation(file, abbr) is not None:
+        if find_abbreviation(file, abbr) is not None :
             dict_sample = find_abbreviation(file, abbr)
             file_species.loc[file_species["File_name"] == file, "Genus"] = dict_sample["Genus"]
             file_species.loc[file_species["File_name"] == file, "Species"] = dict_sample["Species"]
-    file_species.to_csv("metadata.csv", index = False)
+    if not file_species.empty:
+        file_species.to_csv("metadata.csv", index = False)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

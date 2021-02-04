@@ -1,0 +1,3 @@
+start_annotation call:
+
+snakemake --config out=out genus=NotProvided species=NotProvided protein_db=/mnt/db/amr_annotation_db/refseq_plasmids/all_plasmid.nonredundant_proteins.fasta --profile config         --drmaa ' -q bio -n {threads} -R \'span[hosts=1]\'' --drmaa-log-dir out/log/drmaa 

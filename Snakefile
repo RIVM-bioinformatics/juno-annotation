@@ -31,6 +31,7 @@ configfile: "config/pipeline_parameters.yaml"
 
 # SAMPLES is a dict with sample in the form sample > file. E.g.: SAMPLES["sample_1"]["file"] = "sample_1.fasta"
 SAMPLES = {}
+
 with open(config["sample_sheet"]) as sample_sheet_file:
     SAMPLES = yaml.safe_load(sample_sheet_file) 
 
@@ -49,9 +50,9 @@ for sample in SAMPLES:
         SAMPLES[sample]["genus"] = GENUS_ALL
     # Assign species if non-existing
     try:
-        SAMPLES[sample]["Species"]
+        SAMPLES[sample]["species"]
     except KeyError:
-        SAMPLES[sample]["Species"] = GENUS_ALL
+        SAMPLES[sample]["species"] = SPECIES_ALL
 
 #@################################################################################
 #@#### 				            Processes                                    #####
@@ -99,6 +100,7 @@ onstart:
         conda list > '{OUT}/results/log_conda.txt'
         echo -e "\tGenerating config file log..."
         rm -f '{OUT}/results/log_config.txt'
+        cat config/amr_annotation_call.txt > '{OUT}/results/log_conda.txt'
         for file in config/*.yaml
         do
             echo -e "\n==> Contents of file \"${{file}}\": <==" >> '{OUT}/results/log_config.txt'
@@ -127,6 +129,8 @@ onerror:
 onsuccess:
     shell("""
         echo -e "Removing temporary files..."
+        rm -f tbl2asn
+        # rm -rf ${OUTPUT_DIR}/pgap/*_1
         find {OUT} -type d -empty -delete
         echo -e "\tGenerating HTML index of log files..."
         echo -e "\tGenerating Snakemake report..."

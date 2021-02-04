@@ -16,6 +16,8 @@
 ###                                                                                                                                         ###
 ###############################################################################################################################################
 
+# Fail if error
+set -eu
 
 # Load in necessary functions
 set -o allexport
@@ -32,8 +34,8 @@ PATH_MASTER_YAML="envs/master_env.yaml"
 MASTER_NAME=$(head -n 1 ${PATH_MASTER_YAML} | cut -f2 -d ' ') # Extract Conda environment name as specified in yaml file
 
 ### Default values for parameters
-INPUT_DIR="raw_data/"
-OUTPUT_DIR="out/"
+INPUT_DIR="raw_data"
+OUTPUT_DIR="out"
 GENUS="NotProvided"
 SPECIES="NotProvided"
 MAKE_METADATA="FALSE"
@@ -51,12 +53,12 @@ do
     key="$1"
     case $key in
         -i|--input)
-        INPUT_DIR="$2"
+        INPUT_DIR="${2%/}"
         shift # Next
         shift # Next
         ;;
         -o|--output)
-        OUTPUT_DIR="$2"
+        OUTPUT_DIR="${2%/}"
         shift # Next
         shift # Next
         ;;
@@ -116,73 +118,14 @@ set -- "${POSITIONAL[@]:-}" # Restores the positional arguments (i.e. without th
 ### Print AMR_annotation pipeline help message
 if [ "${HELP:-}" == "TRUE" ]; then
     line
-    cat <<HELP_USAGE
-AMR_annotation pipeline, built with Snakemake
-  Usage: bash $0 -i <INPUT_DIR> <parameters>
-
-Input:
-  -i, --input [DIR]                 This is the folder containing your input fasta files.
-                                    Default is raw_data/
-
-  -o, --output [DIR]                This is the folder containing your output (results) files.
-                                    Default is out/ 
-
-  --genus [STR]                     Genus of the samples. Only one can be provided and it will be assumed to be the same one for all 
-                                    samples. For example: "--genus Escherichia". Default "Not provided"
-
-  --species [STR]                   Species of the sample (no genus included). Only one can be provided and it will be assumed to be 
-                                    the same one for all samples. For example: "--species coli". Default "Not provided"
-
-  --metadata [.csv]                 CSV file with at least 3 columns: "File_name", "Genus" and "Species". Where the "File_name" should 
-                                    coincide EXACTLY (case sensitive) with the name of the fasta file of the sample. The genus and the
-                                    species they should both be terms accepted in the TaxID system and one single word each. For example:
-                                    mysample.fasta, Escherichia, coli. Note that if you use the option --make-metadata, any other metadata
-                                    file provided will be ignored.
-
-  --make-metadata                   If this option is chosen, the metadata will be gotten from the file name. Basically, the abbreviation
-                                    of some common species are looked for in the file name and they are used to determine the genus and 
-                                    species. The accepted abbreviations are: Kpn = Klebsiella pneumoniae, Eco = Escherichia coli, 
-                                    Ecl = Enterobacter cloacae, Cfr = Citrobacter freundii, Pae = Pseudomonas aeruginosa,
-                                    Sau or Sar = Staphylococcus aureus
-
-  --proteins                        Path to protein database (fasta file with PROTEIN sequences) to be used for annotation with prokka. 
-                                    Default is the non-redundant plasmid proteins of the refseq database stored at the RIVM (you only have
-                                    access if you are at the RIVM).
-
-Output (automatically generated):
-  <output_dir>/                     Contains dir contains the results of every step of the pipeline.
-
-  <output_dir>/log/                 Contains the log files for every step of the pipeline
-
-  <output_dir>/log/drmaa			Contains the .out and .err files of every job sent to the grid/cluster.
-
-  <output_dir>/log/results		    Contains the log files and parameters that the pipeline used for the current run
-
-
-Parameters:
-  -h, --help                        Print the help document.
-
-  -sh, --snakemake-help             Print the snakemake help document.
-
-  --clean (-y)                      Removes output (-y forces "Yes" on all prompts).
-
-  -n, --dry-run                     Useful snakemake command that displays the steps to be performed without actually 
-				                    executing them. Useful to spot any potential issues while running the pipeline.
-
-  -u, --unlock                      Unlocks the working directory. A directory is locked when a run ends abruptly and 
-				                    it prevents you from doing subsequent analyses on that directory until it gets unlocked.
-
-  Other snakemake parameters	    Any other parameters will be passed to snakemake. Read snakemake help (-sh) to see
-				                    the options.
-
-
-HELP_USAGE
+    cat bin/include/help.txt
     exit 0
 fi
 
 ### Remove all output
 if [ "${CLEAN:-}" == "TRUE" ]; then
-    bash bin/Clean
+    export OUTPUT_DIR=${OUTPUT_DIR}
+    bash bin/include/Clean
     exit 0
 fi
 
@@ -198,14 +141,15 @@ if [ ! -e "${PATH_MASTER_YAML}" ]; then # If this yaml file does not exist, give
     exit 1
 fi
 
+
 ## Activate mamba
+set +ue # Turn bash strict mode off because that breaks conda
 conda env update -f envs/mamba.yaml
 source activate mamba
 
 if [[ $PATH != *${MASTER_NAME}* ]]; then # If the master environment is not in your path (i.e. it is not currently active), do...
     line
     spacer
-    set +ue # Turn bash strict mode off because that breaks conda
     source activate "${MASTER_NAME}" # Try to activate this env
     if [ ! $? -eq 0 ]; then # If exit statement is not 0, i.e. master conda env hasn't been installed yet, do...
         if [ "${SKIP_CONFIRMATION}" = "TRUE" ]; then
@@ -232,9 +176,9 @@ if [[ $PATH != *${MASTER_NAME}* ]]; then # If the master environment is not in y
             done
         fi
     fi
-    set -ue # Turn bash strict mode on again
     echo -e "Succesfully activated master environment"
 fi
+set -ue # Turn bash strict mode on again
 
 ###############################################################################################################
 #####                          Snakemake-only parameters                                                  #####
@@ -267,14 +211,16 @@ if [ ! -d "${INPUT_DIR}" ]; then
     exit 1
 fi
 
-# Make metadata if available
+# Make metadata if asked
 if [ $MAKE_METADATA == "TRUE" ]; then
     echo -e "\n\nMaking metadata..."
+    rm -f "metadata.csv"
     python bin/guess_species.py $INPUT_DIR
     METADATA_FILE="./metadata.csv"
     echo -e "\n\nSuccessfully created metadata.csv file"
 fi
 
+# Check provided metadata exists
 if [ $METADATA_FILE != "X" ]; then
     if [ ! -f $METADATA_FILE ]; then
         minispacer
@@ -284,6 +230,11 @@ if [ $METADATA_FILE != "X" ]; then
         minispacer
         exit 1
     fi
+fi
+
+if [ "$GENUS" == "NotProvided" ] && [ "$MAKE_METADATA" == "FALSE" ] && [ "$METADATA_FILE" == "X" ]; then
+    echo "ERROR! You need to provide either the --genus, a --metadata file or choose the --make-metadata option (if your files have the right abbreviations for it)."
+    exit 1
 fi
 
 if [ -f ${PROTEIN_DB} ]; then
@@ -348,12 +299,9 @@ if [ -e sample_sheet.yaml ]; then
     eval $(parse_yaml config/variables.yaml "config_")
     snakemake --config out=$OUTPUT_DIR genus=$GENUS species=$SPECIES protein_db=$PROTEIN_DB --profile config \
         --drmaa " -q bio -n {threads} -R \"span[hosts=1]\"" --drmaa-log-dir ${OUTPUT_DIR}/log/drmaa ${@}
-    if [ -d ${OUTPUT_DIR}/pgap_1 ]; then
-        rm -r ${OUTPUT_DIR}/pgap/*_1
-    fi
-    if [ -f tbl2asn ]; then
-        rm tbl2asn
-    fi
+    echo -e "start_annotation call:\n" > config/amr_annotation_call.txt
+    echo -e "snakemake --config out=$OUTPUT_DIR genus=$GENUS species=$SPECIES protein_db=$PROTEIN_DB --profile config \
+        --drmaa ' -q bio -n {threads} -R \'span[hosts=1]\'' --drmaa-log-dir ${OUTPUT_DIR}/log/drmaa ${@}" >> config/amr_annotation_call.txt
     echo -e "AMR_annotation pipeline run complete"
     set -ue #turn bash strict mode back on
 else
