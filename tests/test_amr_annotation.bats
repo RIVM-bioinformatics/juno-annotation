@@ -15,7 +15,7 @@
 }
 
 @test "Make sample sheet from fasta input" {
-  python bin/generate_sample_sheet.py tests/example_fasta_input/ --metadata tests/files/example_metadata.csv > tests/test_sample_sheet.yaml
+  python bin/generate_sample_sheet.py tests/example_fasta_input/ --metadata tests/example_output/example_metadata.csv > tests/test_sample_sheet.yaml
   sample_sheet_errors=`diff --suppress-common-lines tests/test_sample_sheet.yaml tests/example_output/fasta_sample_sheet.yaml`
   [[ -z $sample_sheet_errors ]]
   rm -f tests/test_sample_sheet.yaml
@@ -23,7 +23,7 @@
 
 @test "Make metadata" {
   python bin/guess_species.py tests/example_fasta_input/
-  sample_sheet_errors=`diff --suppress-common-lines metadata.csv tests/files/example_metadata.csv`
+  sample_sheet_errors=`diff --suppress-common-lines metadata.csv tests/example_output/example_metadata.csv`
   [[ -z $sample_sheet_errors ]]
   rm -f metadata.csv
 }
@@ -31,19 +31,19 @@
 ## Specific for AMR_annotation
 
 @test "Test full pipeline (dry run)" {
-  bash start_annotation.sh -i tests/example_fasta_input/ --metadata tests/files/example_metadata.csv -y -n
+  bash start_annotation.sh -i tests/example_fasta_input/ --metadata tests/example_output/example_metadata.csv --proteins tests/files/db.fasta -y -n
   [[ "$status" -eq 0 ]]
 }
 
 @test "Test error occurs when neither species nor metadata are provided" {
   skip
-  bash start_annotation.sh -i tests/example_fasta_input/ -y
+  bash start_annotation.sh -i tests/example_fasta_input/ --proteins tests/files/db.fasta -y -n
   [[ ! "$status" -eq 0 ]]
 }
 
 @test "Check full pipeline if running locally (and test samples present)" {
   if [ -f "/mnt/db/amr_annotation_db/refseq_plasmids/db_wgenenames_refseq.fasta" ]; then
-      bash start_annotation.sh -i tests/example_fasta_input/ --metadata tests/files/example_metadata.csv -y
+      bash start_annotation.sh -i tests/example_fasta_input/ --metadata tests/example_output/example_metadata.csv -y
   else
       skip
   fi
