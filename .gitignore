@@ -7,10 +7,12 @@ input_data/
 
 # Files to ignore
 config/variables.yaml
+amr_annotation_call.txt
 .Rhistory
 input-2020-09-24.build4894
 pgap_2020-09-24.build4894.sif
 sample_sheet.yaml
 VERSION
 metadata.csv
+tbl2asn
 

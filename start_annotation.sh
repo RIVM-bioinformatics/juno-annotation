@@ -40,7 +40,7 @@ GENUS="NotProvided"
 SPECIES="NotProvided"
 MAKE_METADATA="FALSE"
 METADATA_FILE="X"
-PROTEIN_DB="/mnt/db/amr_annotation_db/refseq_plasmids/all_plasmid.nonredundant_proteins.fasta"
+PROTEIN_DB="/mnt/db/amr_annotation_db/refseq_plasmids/db_wgenenames_refseq.fasta"
 SNAKEMAKE_UNLOCK="FALSE"
 CLEAN="FALSE"
 HELP="FALSE"
@@ -297,12 +297,12 @@ if [ -e sample_sheet.yaml ]; then
     echo -e "pipeline_run:\n    identifier: ${UNIQUE_ID}" > config/variables.yaml
     echo -e "Server_host:\n    hostname: http://${SET_HOSTNAME}" >> config/variables.yaml
     eval $(parse_yaml config/variables.yaml "config_")
-    snakemake --config out=$OUTPUT_DIR genus=$GENUS species=$SPECIES protein_db=$PROTEIN_DB --profile config \
-        --drmaa " -q bio -n {threads} -R \"span[hosts=1]\"" --drmaa-log-dir ${OUTPUT_DIR}/log/drmaa ${@}
     echo -e "start_annotation call:\n" > config/amr_annotation_call.txt
     echo -e "snakemake --config out=$OUTPUT_DIR genus=$GENUS species=$SPECIES protein_db=$PROTEIN_DB --profile config \
         --drmaa ' -q bio -n {threads} -R \'span[hosts=1]\'' --drmaa-log-dir ${OUTPUT_DIR}/log/drmaa ${@}" >> config/amr_annotation_call.txt
     echo -e "AMR_annotation pipeline run complete"
+    snakemake --config out=$OUTPUT_DIR genus=$GENUS species=$SPECIES protein_db=$PROTEIN_DB --profile config \
+        --drmaa " -q bio -n {threads} -R \"span[hosts=1]\"" --drmaa-log-dir ${OUTPUT_DIR}/log/drmaa ${@}
     set -ue #turn bash strict mode back on
 else
     echo -e "Sample_sheet.yaml could not be found"
@@ -310,5 +310,9 @@ else
     echo -e "Please inspect the input directory (${INPUT_DIR}) and make sure the right files are present"
     exit 1
 fi
+
+# Clean up for future runs
+rm -f config/amr_annotation_call.txt
+rm -f config/variables.yaml
 
 exit 0 

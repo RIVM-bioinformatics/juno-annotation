@@ -31,17 +31,21 @@
 ## Specific for AMR_annotation
 
 @test "Test full pipeline (dry run)" {
-  bash start_annotation.sh -i tests/example_fasta_input/ --metadata tests/files/example_metadata.csv -n
+  bash start_annotation.sh -i tests/example_fasta_input/ --metadata tests/files/example_metadata.csv -y -n
   [[ "$status" -eq 0 ]]
 }
 
 @test "Test error occurs when neither species nor metadata are provided" {
   skip
-  bash start_annotation.sh -i tests/example_fasta_input/
+  bash start_annotation.sh -i tests/example_fasta_input/ -y
   [[ ! "$status" -eq 0 ]]
 }
 
 @test "Check full pipeline if running locally (and test samples present)" {
-  bash start_annotation.sh -i tests/example_fasta_input/ --metadata tests/files/example_metadata.csv
+  if [ -f "/mnt/db/amr_annotation_db/refseq_plasmids/db_wgenenames_refseq.fasta" ]; then
+      bash start_annotation.sh -i tests/example_fasta_input/ --metadata tests/files/example_metadata.csv -y
+  else
+      skip
+  fi
   [[ "$status" -eq 0 ]]
 }
