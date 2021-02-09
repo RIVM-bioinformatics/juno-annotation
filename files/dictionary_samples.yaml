@@ -1,21 +1,60 @@
-Kpn:
-  Genus: Klebsiella
-  Species: pneumoniae
-Eco:
-  Genus: Escherichia
-  Species: coli
-Ecl:
-  Genus: Enterobacter
-  Species: cloacae
+Cam:
+  Genus: Citrobacter
+  Species: amalonaticus
+Cbr:
+  Genus: Citrobacter
+  Species: braakii
 Cfr:
   Genus: Citrobacter
   Species: freundii
+Cse:
+  Genus: Citrobacter
+  Species: sedlakii
+Cwe:
+  Genus: Citrobacter
+  Species: werkmanii
+Ebu:
+  Genus: Enterobacter
+  Species: bugandensis
+Eca:
+  Genus: Enterobacter
+  Species: cancerogenus
+Ecl:
+  Genus: Enterobacter
+  Species: cloacae
+Eco:
+  Genus: Escherichia
+  Species: coli
+Exi:
+  Genus: Enterobacter
+  Species: cloacae
+Kae:
+  Genus: Klebsiella
+  Species: aerogenes
+Kox:
+  Genus: Klebsiella
+  Species: oxytoca
+Kpn:
+  Genus: Klebsiella
+  Species: pneumoniae
+Mmo:
+  Genus: Morganella
+  Species: morganii
 Pae:
   Genus: Pseudomonas
   Species: aeruginosa
+Pmi:
+  Genus: Proteus
+  Species: mirabilis
+Rpl:
+  Genus: Raoultella
+  Species: planticola
+Sar:
+  Genus: Staphylococcus
+  Species: argenteus
 Sau:
   Genus: Staphylococcus
   Species: aureus
-Sar:
-  Genus: Staphylococcus
-  Species: aureus
+Sma:
+  Genus: Serratia
+  Species: marcescens
