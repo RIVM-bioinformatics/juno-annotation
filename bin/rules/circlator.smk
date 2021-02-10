@@ -7,8 +7,6 @@ rule fixstart_circlator:
         OUT + "/filtered_contigs/{sample}.fasta"
     output:
         OUT + "/circlator/{sample}/{sample}.fasta",
-        temp(OUT + "/circlator/{sample}/{sample}.prodigal.for_prodigal.fa"),
-        temp(OUT + "/circlator/{sample}/{sample}.prodigal.prodigal.gff"),
         temp(OUT + "/circlator/{sample}/{sample}.promer.promer"),
         temp(OUT + "/circlator/{sample}/{sample}.promer.contigs_with_ends.fa"),
         temp(OUT + "/circlator/{sample}/{sample}.log"),

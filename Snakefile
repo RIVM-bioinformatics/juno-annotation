@@ -130,7 +130,8 @@ onsuccess:
     shell("""
         echo -e "Removing temporary files..."
         rm -f tbl2asn
-        # rm -rf ${OUTPUT_DIR}/pgap/*_1
+        find {OUT}/circlator/ -name "*prodigal.for_prodigal.fa" -delete
+        find {OUT}/circlator/ -name "*prodigal.prodigal.gff" -delete
         find {OUT} -type d -empty -delete
         echo -e "\tGenerating HTML index of log files..."
         echo -e "\tGenerating Snakemake report..."
