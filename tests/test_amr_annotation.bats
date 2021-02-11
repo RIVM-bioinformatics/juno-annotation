@@ -23,8 +23,8 @@
 
 @test "Make metadata" {
   python bin/guess_species.py tests/example_fasta_input/
-  sample_sheet_errors=`diff --suppress-common-lines metadata.csv tests/example_output/example_metadata.csv`
-  [[ -z $sample_sheet_errors ]]
+  [[ $(grep "sample1_Kpn.fasta,Klebsiella,pneumoniae" metadata.csv) == "sample1_Kpn.fasta,Klebsiella,pneumoniae" ]]
+  [[ $(grep "samp2_Eco.fasta,Escherichia,coli" metadata.csv) == "samp2_Eco.fasta,Escherichia,coli" ]]
   rm -f metadata.csv
 }
 
@@ -33,12 +33,6 @@
 @test "Test full pipeline (dry run)" {
   bash start_annotation.sh -i tests/example_fasta_input/ --metadata tests/example_output/example_metadata.csv --proteins tests/files/db.fasta -y -n
   [[ "$status" -eq 0 ]]
-}
-
-@test "Test error occurs when neither species nor metadata are provided" {
-  skip
-  bash start_annotation.sh -i tests/example_fasta_input/ --proteins tests/files/db.fasta -y -n
-  [[ ! "$status" -eq 0 ]]
 }
 
 @test "Check full pipeline if running locally (and test samples present)" {
