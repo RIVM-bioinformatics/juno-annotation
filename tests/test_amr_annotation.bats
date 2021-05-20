@@ -8,7 +8,7 @@
 }
 
 @test "Make sample sheet from input directory that does not contain either fasta or fastq files" {
-  python bin/generate_sample_sheet.py tests/ > tests/test_sample_sheet.yaml
+  python bin/generate_sample_sheet.py tests > tests/test_sample_sheet.yaml
   sample_sheet_errors=`diff --suppress-common-lines tests/test_sample_sheet.yaml tests/example_output/wrong_sample_sheet.yaml`
   [[ -z $sample_sheet_errors ]]
   rm -f tests/test_sample_sheet.yaml
@@ -23,8 +23,8 @@
 
 @test "Make metadata" {
   python bin/guess_species.py tests/example_fasta_input/
-  [[ $(grep "sample1_Kpn.fasta,Klebsiella,pneumoniae" metadata.csv) == "sample1_Kpn.fasta,Klebsiella,pneumoniae" ]]
-  [[ $(grep "samp2_Eco.fasta,Escherichia,coli" metadata.csv) == "samp2_Eco.fasta,Escherichia,coli" ]]
+  [[ $(grep "sample1_Mmo.fasta" metadata.csv) == "sample1_Mmo.fasta,Morganella,morganii" ]]
+  [[ $(grep "samp2_Ecl.fasta" metadata.csv) == "samp2_Ecl.fasta,Enterobacter,cloacae" ]]
   rm -f metadata.csv
 }
 

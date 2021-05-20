@@ -301,8 +301,16 @@ if [ -e sample_sheet.yaml ]; then
     echo -e "snakemake --config out=$OUTPUT_DIR genus=$GENUS species=$SPECIES protein_db=$PROTEIN_DB --profile config \
         --drmaa ' -q bio -n {threads} -R \'span[hosts=1]\'' --drmaa-log-dir ${OUTPUT_DIR}/log/drmaa ${@}" >> config/amr_annotation_call.txt
     echo -e "AMR_annotation pipeline run complete"
-    snakemake --config out=$OUTPUT_DIR genus=$GENUS species=$SPECIES protein_db=$PROTEIN_DB --profile config \
-        --drmaa " -q bio -n {threads} -R \"span[hosts=1]\"" --drmaa-log-dir ${OUTPUT_DIR}/log/drmaa ${@}
+    snakemake --profile config \
+                --config out=$OUTPUT_DIR genus=$GENUS species=$SPECIES protein_db=$PROTEIN_DB \
+                --drmaa " -q bio -n {threads} \
+                        -o ${OUTPUT_DIR}/log/drmaa/{name}_{wildcards}_{jobid}.out \
+                        -e ${OUTPUT_DIR}/log/drmaa/{name}_{wildcards}_{jobid}.err \
+                        -R \"span[hosts=1] rusage[mem={resources.mem_mb}]\" "  \
+                --drmaa-log-dir ${OUTPUT_DIR}/log/drmaa ${@}
+    RESULT=$?
+    # snakemake --config out=$OUTPUT_DIR genus=$GENUS species=$SPECIES protein_db=$PROTEIN_DB --profile config \
+    #     --drmaa " -q bio -n {threads} -R \"span[hosts=1]\"" --drmaa-log-dir ${OUTPUT_DIR}/log/drmaa ${@}
     set -ue #turn bash strict mode back on
 else
     echo -e "Sample_sheet.yaml could not be found"
@@ -315,4 +323,4 @@ fi
 rm -f config/amr_annotation_call.txt
 rm -f config/variables.yaml
 
-exit 0 
+exit $RESULT

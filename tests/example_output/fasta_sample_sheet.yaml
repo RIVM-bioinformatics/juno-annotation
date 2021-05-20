@@ -1,9 +1,9 @@
-samp2_Eco:
-  Genus: Escherichia
-  Species: coli
-  fasta_file: tests/example_fasta_input/samp2_Eco.fasta
-sample1_Kpn:
-  Genus: Klebsiella
-  Species: pneumoniae
-  fasta_file: tests/example_fasta_input/sample1_Kpn.fasta
+samp2_Ecl:
+  Genus: Enerobacter
+  Species: cloacae
+  fasta_file: tests/example_fasta_input/samp2_Ecl.fasta
+sample1_Mmo:
+  Genus: Morganella
+  Species: morganii
+  fasta_file: tests/example_fasta_input/sample1_Mmo.fasta
 
