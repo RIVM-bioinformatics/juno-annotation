@@ -27,6 +27,6 @@ jobs:
           auto-activate-base: false
       - shell: bash -l {0}
         run: conda list
-      - name: Make and activate necessary environments (mamba and testing_env) and run test
-        shell: bash -l {0}
-        run: bats tests/test_amr_annotation.bats
+      # - name: Make and activate necessary environments (mamba and testing_env) and run test
+      #   shell: bash -l {0}
+      #   run: bats tests/test_amr_annotation.bats

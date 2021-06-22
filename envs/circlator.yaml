@@ -3,4 +3,4 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - circlator
+  - circlator=1.5.5
