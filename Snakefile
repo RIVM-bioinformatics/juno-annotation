@@ -37,6 +37,7 @@ with open(config["sample_sheet"]) as sample_sheet_file:
 
 # OUT defines output directory for most rules.
 OUT = os.path.abspath(config["out"])
+
 GENUS_ALL = config["genus"]
 SPECIES_ALL = config["species"]
 PROTEIN_DB = config["protein_db"]

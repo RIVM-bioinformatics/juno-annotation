@@ -44,8 +44,8 @@ def main(args):
             if match:
                 sample = str(match.group(1))
                 if sample in samples:
-                    samples[sample]["Genus"] = species_file[sample_name]["Genus"]
-                    samples[sample]["Species"] = species_file[sample_name]["Species"]
+                    samples[sample]["genus"] = species_file[sample_name]["genus"]
+                    samples[sample]["species"] = species_file[sample_name]["species"]
 
     print(yaml.dump(samples, default_flow_style=False))
 
@@ -55,5 +55,5 @@ if __name__ == "__main__":
     parser.add_argument("dir", type=pathlib.Path, 
                        help="Directory where input files are located")
     parser.add_argument("--metadata", type=str, 
-                       help=".csv file containing at least 3 columns: 'File_name', 'Genus' and 'Species'")
+                       help=".csv file containing at least 3 columns: 'File_name', 'genus' and 'species'")
     main(parser.parse_args())

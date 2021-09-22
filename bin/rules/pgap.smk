@@ -16,8 +16,8 @@ rule annotation_pgap:
     threads: config["threads"]["pgap"]
     resources: mem_mb=config["mem_mb"]["pgap"]
     params:
-        genus = lambda wildcards: SAMPLES[wildcards.sample]["Genus"],
-        species = lambda wildcards: SAMPLES[wildcards.sample]["Species"],
+        genus = lambda wildcards: SAMPLES[wildcards.sample]["genus"],
+        species = lambda wildcards: SAMPLES[wildcards.sample]["species"],
         temp_output = lambda wildcards: OUT + "/pgap/" + str(wildcards.sample) + "_1"
     log:
         OUT + "/log/pgap/{sample}.log"
