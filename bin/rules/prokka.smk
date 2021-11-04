@@ -27,7 +27,9 @@ sample_name=`basename ${{output_dir}}`
 output_dir=`dirname ${{output_dir}}`
 
 if [ {params.species} != "NotProvided" ]; then
-    prokka --outdir ${{output_dir}} --force \
+    prokka --outdir ${{output_dir}} \
+    --compliant \
+    --force \
     --genus {params.genus} \
     --species {params.species} \
     --prefix ${{sample_name%.gbk}} \
@@ -35,7 +37,9 @@ if [ {params.species} != "NotProvided" ]; then
     --addgenes \
     --cpus {threads} {input.fasta} &>> {log}
 else
-    prokka --outdir ${{output_dir}} --force \
+    prokka --outdir ${{output_dir}} \
+    --compliant \
+    --force \
     --genus {params.genus} \
     --prefix ${{sample_name%.gbk}} \
     --proteins {input.protein_db} \

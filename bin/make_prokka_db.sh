@@ -49,17 +49,20 @@ rm -f db_refseq_includinggenenames.fasta
 
 while read line; do
   if [[ $line =~ ^\>WP && ! $line =~ hypothetical ]]; then
+    # Example: >WP_015241380.1 diaminopimelate decarboxylase [Sinorhizobium meliloti]
     protein_name=`echo ${line#*.[0-9] }`
     protein_name=`echo ${protein_name%[*\]}`
+    # Example diaminopimelate decarboxylase
     if grep -q "~~~${protein_name} $" intermediate2.txt ; then
       replacement=`grep -h "~~~${protein_name} $" intermediate2.txt`
       line=${line/${protein_name} /~~~${replacement}}
+      # Example: >WP_015241380.1 ~~~lysA~~~diaminopimelate decarboxylase [Sinorhizobium meliloti]
     fi
   fi
   echo $line >> db_refseq_includinggenenames.fasta
 done <all_plasmid.nonredundant_proteins.fasta
 
-rm -f intermediate*
+# rm -f intermediate*
 find . -maxdepth 1 -type f -name '*nonredundant*.faa' -delete
 find . -maxdepth 1 -type f -name '*nonredundant*.gpff' -delete
 

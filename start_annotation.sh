@@ -144,7 +144,7 @@ fi
 
 ## Activate mamba
 set +ue # Turn bash strict mode off because that breaks conda
-conda env update -f envs/mamba.yaml
+#conda env update -f envs/mamba.yaml
 source activate mamba
 
 if [[ $PATH != *${MASTER_NAME}* ]]; then # If the master environment is not in your path (i.e. it is not currently active), do...
@@ -302,14 +302,14 @@ if [ -e sample_sheet.yaml ]; then
     echo -e "AMR_annotation pipeline run complete"
     snakemake --profile config \
                 --config out=$OUTPUT_DIR genus=$GENUS species=$SPECIES protein_db=$PROTEIN_DB \
-                --drmaa " -q bio -n {threads} \
-                        -o ${OUTPUT_DIR}/log/drmaa/{name}_{wildcards}_{jobid}.out \
-                        -e ${OUTPUT_DIR}/log/drmaa/{name}_{wildcards}_{jobid}.err \
-                        -R \"span[hosts=1] rusage[mem={resources.mem_mb}]\" "  \
-                --drmaa-log-dir ${OUTPUT_DIR}/log/drmaa ${@}
+                --cluster " bsub -q bio \
+                    -n {threads} \
+                    -o ${OUTPUT_DIR}/log/drmaa/{name}_{wildcards}_{jobid}.out \
+                    -e ${OUTPUT_DIR}/log/drmaa/{name}_{wildcards}_{jobid}.err \
+                    -R \"span[hosts=1]\" \
+                    -M {resources.mem_mb}M \
+                    -W 60" ${@}
     RESULT=$?
-    # snakemake --config out=$OUTPUT_DIR genus=$GENUS species=$SPECIES protein_db=$PROTEIN_DB --profile config \
-    #     --drmaa " -q bio -n {threads} -R \"span[hosts=1]\"" --drmaa-log-dir ${OUTPUT_DIR}/log/drmaa ${@}
     set -ue #turn bash strict mode back on
 else
     echo -e "Sample_sheet.yaml could not be found"
