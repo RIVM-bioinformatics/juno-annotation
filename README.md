@@ -16,7 +16,7 @@ This handbook assumes that you are working at the “bioinformatica” environme
 
 - The pipeline needs to know the Genus and Species of each input fasta file. There are three ways to do this (see the section Run the pipeline for more details on how to do this and the recognized abbreviations): 
     + The pipeline can guess this information from the file name provided the appropriate abbreviations are used within the name. 
-    + You can provide a metadata file (.csv) that should contain at least three columns: "File_name", "Genus" and "Species" (mind the capital letters). The File name is case sensitive, so the names of the files (without the full path) should coincide EXACTLY with your input fasta files. The genus and species should be recognized as an official [TaxID](https://www.ncbi.nlm.nih.gov/taxonomy). You MUST write the genus and the species in the appropriate column, never together in one column. This option cannot be combined with the first one. This means that if you decide to "guess" the genus and species from the file name, the provided metadata file will be ignored.
+    + You can provide a metadata file (.csv) that should contain at least three columns: "sample", "genus" and "species" (mind the small letters). The File name (sample) is case sensitive, so the names of the files (without the full path) should coincide EXACTLY with your input fasta files. You can omit the '.fasta' extension. For instance, a file named my_sample.fasta has a sample name 'my_sample'. The genus and species should be recognized as an official [TaxID](https://www.ncbi.nlm.nih.gov/taxonomy). You MUST write the genus and the species in the appropriate column, never together in one column. This option cannot be combined with the first one. This means that if you decide to "guess" the genus and species from the file name, the provided metadata file will be ignored.
     + You can provide the genus and species directly when calling the pipeline. The genus and species should be recognized as an official [TaxID](https://www.ncbi.nlm.nih.gov/taxonomy). YOU CAN ONLY PROVIDE ONE GENUS AND ONE SPECIES and this will be used for all samples. You can combine this option with one of the two above. This means that if you have multiple samples but some of them are not enlisted in your metadata file, they will instead inherit the genus and species from the information provided directly when calling the pipeline. If all the files were enlisted in the metadata, this option will be ignored.
 
 ### Download the pipeline  
@@ -56,7 +56,7 @@ bash start_annotation.sh -i /my_laptop/<my_folder>/<my_data>/ --genus Klebsiella
 
 If your samples do not have all the same genus, you can make a metadata file. This file should be a .csv file with at least these columns and information: 
 
-|File_name          |Genus          |Species    |
+|sample             |genus          |species    |
 |:------------------|:--------------|:----------|
 |sample1_Kpn.fasta  |Klebsiella     |pneumoniae |
 |sample2Pae2.fasta  |Pseudomonas    |aeruginosa |
@@ -72,7 +72,7 @@ bash start_annotation.sh -i /my_laptop/<my_folder>/<my_data>/ --metadata path/to
 
 Alternatively, if your input files have one of the following abbreviations somewhere in the data, the genus and species may be automatically guessed from the file name:
 
-|Abbreviation |Genus          |Species      |
+|abbreviation |genus          |species      |
 |:------------|:--------------|:------------|
 |Cam          |Citrobacter    |amalonaticus |
 |Cbr          |Citrobacter    |braakii      |

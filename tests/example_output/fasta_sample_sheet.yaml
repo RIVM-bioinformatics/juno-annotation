@@ -1,9 +1,9 @@
 samp2_Ecl:
-  Genus: Enerobacter
-  Species: cloacae
   fasta_file: tests/example_fasta_input/samp2_Ecl.fasta
+  genus: Enerobacter
+  species: cloacae
 sample1_Mmo:
-  Genus: Morganella
-  Species: morganii
   fasta_file: tests/example_fasta_input/sample1_Mmo.fasta
+  genus: Morganella
+  species: morganii
 

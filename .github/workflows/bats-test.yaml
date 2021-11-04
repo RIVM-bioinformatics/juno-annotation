@@ -1,18 +1,18 @@
-# BATS testing for bash wrapper
-# Based on: https://github.com/marketplace/actions/setup-miniconda#example-1-basic-usage
-
 name: Juno-annotation pipeline
 
 on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-    name: Testing bash wrapper ${{ matrix.config.os }}
+        config: 
+          - {os: macOS-latest}
+          - {os: ubuntu-18.04}
+          - {os: ubuntu-latest}
+    name: Testing Juno_annotation bash wrapper ${{ matrix.config.os }}
 
     steps:
       - uses: actions/checkout@v2
@@ -27,6 +27,6 @@ jobs:
           auto-activate-base: false
       - shell: bash -l {0}
         run: conda list
-      # - name: Make and activate necessary environments (mamba and testing_env) and run test
-      #   shell: bash -l {0}
-      #   run: bats tests/test_amr_annotation.bats
+      - name: Make and activate necessary environments (mamba and testing_env) and run test
+        shell: bash -l {0}
+        run: bats tests/test_amr_annotation.bats

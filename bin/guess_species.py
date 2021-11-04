@@ -15,16 +15,16 @@ def find_abbreviation(file_name, abbreviation):
 
 def main(args):
     # Get file names 
-    file_species = pd.DataFrame(glob.glob(args.dir+"/*.fasta"), columns=["File_name"])
+    file_species = pd.DataFrame(glob.glob(args.dir+"/*.fasta"), columns=["sample"])
     file_species["genus"] = ""
     file_species["species"] = ""
-    file_species["File_name"] = file_species["File_name"].apply(os.path.basename)
+    file_species["sample"] = file_species["sample"].apply(os.path.basename)
     # File names to genus/species
-    for file, abbr in [(file, abbr) for file in file_species["File_name"].tolist() for abbr in list(translation_tbl.keys())]:
+    for file, abbr in [(file, abbr) for file in file_species["sample"].tolist() for abbr in list(translation_tbl.keys())]:
         if find_abbreviation(file, abbr) is not None :
             dict_sample = find_abbreviation(file, abbr)
-            file_species.loc[file_species["File_name"] == file, "genus"] = dict_sample["genus"]
-            file_species.loc[file_species["File_name"] == file, "species"] = dict_sample["species"]
+            file_species.loc[file_species["sample"] == file, "genus"] = dict_sample["genus"]
+            file_species.loc[file_species["sample"] == file, "species"] = dict_sample["species"]
     if not file_species.empty:
         file_species.to_csv("metadata.csv", index = False)
 
