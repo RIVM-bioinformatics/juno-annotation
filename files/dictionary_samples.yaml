@@ -1,60 +1,66 @@
 Cam:
-  Genus: Citrobacter
-  Species: amalonaticus
+  genus: Citrobacter
+  species: amalonaticus
 Cbr:
-  Genus: Citrobacter
-  Species: braakii
+  genus: Citrobacter
+  species: braakii
+Cko:
+  genus: Citrobacter
+  species: koseri
 Cfr:
-  Genus: Citrobacter
-  Species: freundii
+  genus: Citrobacter
+  species: freundii
 Cse:
-  Genus: Citrobacter
-  Species: sedlakii
+  genus: Citrobacter
+  species: sedlakii
 Cwe:
-  Genus: Citrobacter
-  Species: werkmanii
+  genus: Citrobacter
+  species: werkmanii
 Ebu:
-  Genus: Enterobacter
-  Species: bugandensis
+  genus: Enterobacter
+  species: bugandensis
 Eca:
-  Genus: Enterobacter
-  Species: cancerogenus
+  genus: Enterobacter
+  species: cancerogenus
 Ecl:
-  Genus: Enterobacter
-  Species: cloacae
+  genus: Enterobacter
+  species: cloacae
 Eco:
-  Genus: Escherichia
-  Species: coli
+  genus: Escherichia
+  species: coli
 Exi:
-  Genus: Enterobacter
-  Species: cloacae
+  genus: Enterobacter
+  species: cloacae
 Kae:
-  Genus: Klebsiella
-  Species: aerogenes
+  genus: Klebsiella
+  species: aerogenes
 Kox:
-  Genus: Klebsiella
-  Species: oxytoca
+  genus: Klebsiella
+  species: oxytoca
 Kpn:
-  Genus: Klebsiella
-  Species: pneumoniae
+  genus: Klebsiella
+  species: pneumoniae
 Mmo:
-  Genus: Morganella
-  Species: morganii
+  genus: Morganella
+  species: morganii
 Pae:
-  Genus: Pseudomonas
-  Species: aeruginosa
+  genus: Pseudomonas
+  species: aeruginosa
+Ppu:
+  genus: Pseudomonas
+  species: putida
 Pmi:
-  Genus: Proteus
-  Species: mirabilis
+  genus: Proteus
+  species: mirabilis
 Rpl:
-  Genus: Raoultella
-  Species: planticola
+  genus: Raoultella
+  species: planticola
 Sar:
-  Genus: Staphylococcus
-  Species: argenteus
+  genus: Staphylococcus
+  species: argenteus
 Sau:
-  Genus: Staphylococcus
-  Species: aureus
+  genus: Staphylococcus
+  species: aureus
 Sma:
-  Genus: Serratia
-  Species: marcescens
+  genus: Serratia
+  species: marcescens
