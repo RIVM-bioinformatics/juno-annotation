@@ -5,7 +5,7 @@ channels:
   - anaconda
   - defaults
 dependencies:
-  - mamba
+  - mamba=0.15.3
   - snakemake==5.20.1
   - drmaa==0.7.9
   - xlrd==1.2.0
