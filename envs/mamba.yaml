@@ -2,4 +2,5 @@ name: mamba
 channels:
       - conda-forge
 dependencies:
-      - mamba=0.15.3
+      - mamba<=0.15.3
+      - python[version='>=3.6,<3.7.0a0|>=3.9,<3.10.0a0|>=3.8,<3.9.0a0|>=3.7,<3.8.0a0']
