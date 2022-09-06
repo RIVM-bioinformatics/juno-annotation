@@ -318,6 +318,7 @@ else
     exit 1
 fi
 
+snakemake --archive "${OUTPUT_DIR}"/AMR_annotation.tar.gz \
 # Clean up for future runs
 rm -f config/amr_annotation_call.txt
 rm -f config/variables.yaml
