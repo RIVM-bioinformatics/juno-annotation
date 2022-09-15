@@ -1,4 +1,4 @@
-# Annotation pipeline
+# Juno-Annotation
 
 This pipeline takes assemblies (.fasta) as input and performs gene annotation. It should be able to annotate bacterial genomes and bacterial plasmids. The pipeline follows these steps:
 
