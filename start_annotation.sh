@@ -144,41 +144,28 @@ fi
 
 ## Activate mamba
 set +ue # Turn bash strict mode off because that breaks conda
-conda env update -f envs/mamba.yaml
-source activate mamba
+# conda env update -f envs/mamba.yaml
+# source activate mamba
 
-if [[ $PATH != *${MASTER_NAME}* ]]; then # If the master environment is not in your path (i.e. it is not currently active), do...
-    line
-    spacer
-    source activate "${MASTER_NAME}" # Try to activate this env
-    if [ ! $? -eq 0 ]; then # If exit statement is not 0, i.e. master conda env hasn't been installed yet, do...
-        if [ "${SKIP_CONFIRMATION}" = "TRUE" ]; then
-            echo -e "\tInstalling master environment..." 
-            mamba env update -f ${PATH_MASTER_YAML} 
-            source activate "${MASTER_NAME}"
-            echo -e "DONE"
-        else
-            while read -r -p "The master environment hasn't been installed yet, do you want to install this environment now? [y/n] " envanswer
-            do
-                envanswer=${envanswer,,}
-                if [[ "${envanswer}" =~ ^(yes|y)$ ]]; then
-                    echo -e "\tInstalling master environment..." 
-                    mamba env update -f ${PATH_MASTER_YAML}
-                    source activate "${MASTER_NAME}"
-                    echo -e "DONE"
-                    break
-                elif [[ "${envanswer}" =~ ^(no|n)$ ]]; then
-                    echo -e "The master environment is a requirement. Exiting because the AMR_annotation pipeline cannot continue without this environment"
-                    exit 1
-                else
-                    echo -e "Please answer with 'yes' or 'no'"
-                fi
-            done
-        fi
+if [[ $PATH != *${MASTER_NAME}* ]]
+then # If echo $PATH does not contain the conda env name I will force install it.
+    echo 'The environment '${MASTER_NAME}' is currently not in your PATH, will try to activate'; 
+    source activate "${MASTER_NAME}" # Might be double..
+    error=$?
+    if [ "${error}" != "0" ]
+    then # Only when it fails to activate this env it will force install.
+        echo 'Could not find '${MASTER_NAME}' . Am now going to create a new environment with this name'
+        # source activate mamba
+        mamba env update -f ${PATH_MASTER_YAML}
+        # conda env create -n "$MASTER_NAME" -f "$PATH_MASTER_YAML" # Old rule to install env but changed to mamba
+        source activate "${MASTER_NAME}"
     fi
-    echo -e "Succesfully activated master environment"
+else # If it didn't fail it means I can activate it so am using that - Maybe also get an update in this command?
+    echo ${MASTER_NAME}' found, will now activate it.'; 
+    source activate "${MASTER_NAME}"
+    # conda env update -f $PATH_MASTER_YAML # Not sure if I need this or actually want this because it might actually break an environment that worked before.
 fi
-set -ue # Turn bash strict mode on again
+set -ue # Turn bash strict mode on again # Need to check what exactly these set flags do.
 
 ###############################################################################################################
 #####                          Snakemake-only parameters                                                  #####
@@ -318,7 +305,7 @@ else
     exit 1
 fi
 
-snakemake --archive "${OUTPUT_DIR}"/AMR_annotation.tar.gz \
+snakemake --cores all --archive "${OUTPUT_DIR}"/AMR_annotation.tar.gz \
 # Clean up for future runs
 rm -f config/amr_annotation_call.txt
 rm -f config/variables.yaml
