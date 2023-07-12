@@ -1,6 +1,6 @@
 name: circlator
 channels:
   - bioconda
-  - defaults
+  - nodefaults
 dependencies:
   - circlator=1.5.5

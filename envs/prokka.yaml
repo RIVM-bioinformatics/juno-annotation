@@ -2,7 +2,7 @@ name: prokka
 channels:
   - conda-forge
   - bioconda
-  - defaults
+  - nodefaults
 dependencies:
   - prokka=1.13.4
   - blast=2.9 # Bug in prokka<1.14.5 not recognizing that 2.10+ is bigger version than 2.2

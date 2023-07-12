@@ -2,8 +2,7 @@ name: amr_master
 channels:
   - bioconda
   - conda-forge
-  - anaconda
-  - defaults
+  - nodefaults
 dependencies:
   - mamba
   - snakemake==5.20.1
